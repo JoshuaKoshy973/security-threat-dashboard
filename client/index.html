@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Threat Monitoring Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Security Threat Monitoring Dashboard</h1>
+    <p>CS 499 Software Engineering Enhancement</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Login</h2>
+      <input id="email" type="email" placeholder="Email" value="josh@test.com" />
+      <input id="password" type="password" placeholder="Password" value="password123" />
+      <button onclick="login()">Login</button>
+      <p id="login-status"></p>
+    </section>
+
+    <section class="dashboard">
+      <div class="stat-card">
+        <h3>Total Logs</h3>
+        <p id="total-logs">0</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Alerts</h3>
+        <p id="total-alerts">0</p>
+      </div>
+
+      <div class="stat-card">
+        <h3>High Severity Alerts</h3>
+        <p id="high-alerts">0</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Create Security Log</h2>
+      <input id="eventType" type="text" placeholder="Event Type" value="Failed Login" />
+      <input id="username" type="text" placeholder="Username" value="admin" />
+      <input id="ipAddress" type="text" placeholder="IP Address" value="192.168.1.20" />
+      <input id="description" type="text" placeholder="Description" value="Multiple failed login attempts detected" />
+      <button onclick="createLog()">Create Log</button>
+      <p id="log-status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Recent Alerts</h2>
+      <button onclick="loadDashboard()">Refresh Dashboard</button>
+      <div id="alerts-list"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

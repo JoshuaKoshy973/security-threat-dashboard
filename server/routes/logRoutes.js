@@ -20,6 +20,12 @@ router.post("/", protect, async (req, res) => {
   try {
     const { eventType, username, ipAddress, description } = req.body;
 
+    if (!eventType || !username || !ipAddress) {
+      return res.status(400).json({
+        message: "Event type, username, and IP address are required"
+      });
+    }
+
     let severity = "Low";
 
     if (eventType === "Failed Login") {
