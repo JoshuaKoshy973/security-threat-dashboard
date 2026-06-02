@@ -90,8 +90,15 @@ async function loadDashboard() {
       }
     });
 
+    const suspiciousIpsResponse = await fetch(`${API_URL}/logs/suspicious-ips`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
     const logs = await logsResponse.json();
     const alerts = await alertsResponse.json();
+    const suspiciousIps = await suspiciousIpsResponse.json();
 
     document.getElementById("total-logs").textContent = logs.length;
     document.getElementById("total-alerts").textContent = alerts.length;
@@ -100,6 +107,7 @@ async function loadDashboard() {
     document.getElementById("high-alerts").textContent = highAlerts.length;
 
     displayAlerts(alerts);
+    displaySuspiciousIps(suspiciousIps);
   } catch (error) {
     console.error("Dashboard loading error:", error);
   }
@@ -121,9 +129,32 @@ function displayAlerts(alerts) {
       <strong>${alert.title}</strong>
       <p>${alert.message}</p>
       <p><strong>Severity:</strong> ${alert.severity}</p>
+      <p><strong>Threat Score:</strong> ${alert.threatScore}</p>
       <p><strong>Related IP:</strong> ${alert.relatedIp || "N/A"}</p>
       <p><strong>Resolved:</strong> ${alert.resolved ? "Yes" : "No"}</p>
     `;
     alertsList.appendChild(div);
+  });
+}
+
+function displaySuspiciousIps(suspiciousIps) {
+  const ipList = document.getElementById("suspicious-ip-list");
+  ipList.innerHTML = "";
+
+  if (suspiciousIps.length === 0) {
+    ipList.innerHTML = "<p>No suspicious IP activity found.</p>";
+    return;
+  }
+
+  suspiciousIps.forEach(ip => {
+    const div = document.createElement("div");
+    div.className = "alert high";
+    div.innerHTML = `
+      <strong>${ip._id}</strong>
+      <p><strong>Total Threat Score:</strong> ${ip.totalThreatScore}</p>
+      <p><strong>Event Count:</strong> ${ip.eventCount}</p>
+      <p><strong>High Severity Events:</strong> ${ip.highSeverityCount}</p>
+    `;
+    ipList.appendChild(div);
   });
 }

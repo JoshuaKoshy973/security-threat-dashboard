@@ -11,6 +11,10 @@ const alertSchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High"],
       required: true
     },
+    threatScore: {
+      type: Number,
+      default: 0
+    },
     message: {
       type: String,
       required: true

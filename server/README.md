@@ -37,6 +37,14 @@ This project is a full-stack security threat monitoring application created for 
 
 For CS 499 Milestone Two, this artifact was enhanced from a backend-only API into a more complete full-stack security monitoring application. A frontend dashboard was added using HTML, CSS, and JavaScript to allow users to log in, create security events, and view alert data. Backend validation was also added to improve reliability, defensive programming, and user feedback.
 
+## Algorithms and Data Structures Enhancement
+
+For CS 499 Milestone Three, this project was enhanced with a weighted threat scoring algorithm, alert prioritization, and suspicious IP ranking.
+
+The enhanced algorithm assigns numeric threat scores to security events based on event type and repeated activity from the same IP address. Events such as failed logins, admin access attempts, suspicious file access, and unknown IP logins are assigned different weights. The final threat score determines whether an event is classified as Low, Medium, or High severity.
+
+The application also includes suspicious IP ranking using aggregation, grouping, sorting, and limiting. This allows the dashboard to display the top IP addresses with the highest total threat scores.
+
 ## Project Structure
 
 ```text

@@ -19,6 +19,10 @@ const logSchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High"],
       default: "Low"
     },
+    threatScore: {
+      type: Number,
+      default: 0
+    },
     description: {
       type: String
     }
