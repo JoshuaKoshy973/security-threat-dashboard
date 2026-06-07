@@ -96,9 +96,16 @@ async function loadDashboard() {
         }
     });
 
+    const analyticsResponse = await fetch(`${API_URL}/logs/analytics/summary`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
     const logs = await logsResponse.json();
     const alerts = await alertsResponse.json();
     const suspiciousIps = await suspiciousIpsResponse.json();
+    const analytics = await analyticsResponse.json();
 
     document.getElementById("total-logs").textContent = logs.length;
     document.getElementById("total-alerts").textContent = alerts.length;
@@ -108,6 +115,7 @@ async function loadDashboard() {
 
     displayAlerts(alerts);
     displaySuspiciousIps(suspiciousIps);
+    displayAnalytics(analytics);
   } catch (error) {
     console.error("Dashboard loading error:", error);
   }
@@ -156,5 +164,48 @@ function displaySuspiciousIps(suspiciousIps) {
       <p><strong>High Severity Events:</strong> ${ip.highSeverityCount}</p>
     `;
     ipList.appendChild(div);
+  });
+}
+
+function displayAnalytics(analytics) {
+  const analyticsList = document.getElementById("analytics-list");
+  analyticsList.innerHTML = "";
+
+  if (!analytics || !analytics.severityBreakdown) {
+    analyticsList.innerHTML = "<p>No analytics data available.</p>";
+    return;
+  }
+
+  const summary = document.createElement("div");
+  summary.className = "alert low";
+  summary.innerHTML = `
+    <strong>Database Analytics Summary</strong>
+    <p><strong>Total Logs:</strong> ${analytics.totalLogs}</p>
+    <p><strong>High Severity Logs:</strong> ${analytics.highSeverityLogs}</p>
+    <p><strong>Medium Severity Logs:</strong> ${analytics.mediumSeverityLogs}</p>
+    <p><strong>Low Severity Logs:</strong> ${analytics.lowSeverityLogs}</p>
+  `;
+  analyticsList.appendChild(summary);
+
+  analytics.severityBreakdown.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "alert medium";
+    div.innerHTML = `
+      <strong>Severity: ${item._id}</strong>
+      <p><strong>Count:</strong> ${item.count}</p>
+      <p><strong>Average Threat Score:</strong> ${item.averageThreatScore.toFixed(2)}</p>
+    `;
+    analyticsList.appendChild(div);
+  });
+
+  analytics.topEventTypes.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "alert high";
+    div.innerHTML = `
+      <strong>Event Type: ${item._id}</strong>
+      <p><strong>Count:</strong> ${item.count}</p>
+      <p><strong>Average Threat Score:</strong> ${item.averageThreatScore.toFixed(2)}</p>
+    `;
+    analyticsList.appendChild(div);
   });
 }

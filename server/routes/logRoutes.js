@@ -16,6 +16,61 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+
+// Get database-driven dashboard analytics
+router.get("/analytics/summary", protect, async (req, res) => {
+  try {
+    const totalLogs = await Log.countDocuments();
+    const highSeverityLogs = await Log.countDocuments({ severity: "High" });
+    const mediumSeverityLogs = await Log.countDocuments({ severity: "Medium" });
+    const lowSeverityLogs = await Log.countDocuments({ severity: "Low" });
+
+    const severityBreakdown = await Log.aggregate([
+      {
+        $group: {
+          _id: "$severity",
+          count: { $sum: 1 },
+          averageThreatScore: { $avg: "$threatScore" }
+        }
+      },
+      {
+        $sort: {
+          count: -1
+        }
+      }
+    ]);
+
+    const topEventTypes = await Log.aggregate([
+      {
+        $group: {
+          _id: "$eventType",
+          count: { $sum: 1 },
+          averageThreatScore: { $avg: "$threatScore" }
+        }
+      },
+      {
+        $sort: {
+          count: -1
+        }
+      },
+      {
+        $limit: 5
+      }
+    ]);
+
+    res.json({
+      totalLogs,
+      highSeverityLogs,
+      mediumSeverityLogs,
+      lowSeverityLogs,
+      severityBreakdown,
+      topEventTypes
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error getting analytics summary" });
+  }
+});
+
 // Get suspicious IP ranking based on total threat score
 router.get("/suspicious-ips", protect, async (req, res) => {
   try {
